@@ -1,0 +1,16 @@
+[
+    {
+        "nombre": "Luis",
+        "apellido": "Suarez",
+        "dni": "1234567",
+        "fecha_nacimiento": "2024-09-24",
+        "email": "luisito123@gmail.com"
+    },
+    {
+        "nombre": "Gerardo",
+        "apellido": "Herrera",
+        "dni": "1234567",
+        "fecha_nacimiento": "2024-09-24",
+        "email": "gerardo123@gmail.com"
+    }
+]
