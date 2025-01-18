@@ -1,0 +1,10 @@
+[
+  {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "paciente_dni": "1234567",
+    "medico_dni": "14125123",
+    "fecha": "2025-01-18",
+    "motivo": "string",
+    "estado": "pendiente"
+  }
+]

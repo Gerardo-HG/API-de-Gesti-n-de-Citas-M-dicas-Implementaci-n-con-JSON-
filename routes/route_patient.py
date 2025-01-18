@@ -3,6 +3,7 @@ from schemas.patient import Paciente
 import json
 from fastapi.responses import JSONResponse
 from typing import Optional, List
+from utils.data_loader import load_dnis
 
 patient_router = APIRouter()
 
@@ -32,6 +33,15 @@ def show_patients() -> List[Paciente]:
     status_code=201    
 )
 def create_patient(patient : Paciente):
+
+    pacientes_dnis = load_dnis("patients.json", "dni")
+    medicos_dnis = load_dnis("medics.json", "dni")
+
+    if patient.dni in pacientes_dnis:
+        return JSONResponse(status_code=400, content={"message": f"DNI {patient.dni} ya está registrado como paciente."})
+    if patient.dni in medicos_dnis:
+        return JSONResponse(status_code=400, content={"message": f"DNI {patient.dni} ya está registrado como médico."})
+
     try:
         with open("patients.json",'r+') as file:
             try:

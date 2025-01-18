@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "dni": "9876543",
+    "nombre": "Pepe",
+    "apellido": "Suarez",
+    "especialidad": "Cardiologo",
+    "anios_experiencia": 2,
+    "email": "pepelucho123@gmail.com"
+  },
+  {
+    "dni": "14125123",
+    "nombre": "Pepe",
+    "apellido": "Suarez",
+    "especialidad": "Cardiologo",
+    "anios_experiencia": 2,
+    "email": "pepelucho123@gmail.com"
+  }
+]

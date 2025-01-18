@@ -5,7 +5,6 @@ from uuid import UUID
 
 #Pydantic
 from pydantic import BaseModel, Field
-from pydantic import EmailStr
 
 class CitaMedica(BaseModel):
     id : UUID = Field(

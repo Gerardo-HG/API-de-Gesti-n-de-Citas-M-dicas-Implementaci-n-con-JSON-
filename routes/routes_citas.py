@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Path, Body, HTTPException
+from fastapi import APIRouter, Path, Body, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from schemas.citas_medicas import CitaMedica
 from uuid import UUID
+from middlewares.jwt_bearer import JWTBearer
 import json
+from utils.data_loader import load_dnis
 
 cita_router = APIRouter()
 
@@ -20,25 +22,12 @@ def save_appointments(appointments):
     with open("citas_medicas.json", "w") as file:
         json.dump(appointments, file, indent=4)
 
-def load_dnis(file_name: str, key: str):
-    try:
-        with open(file_name, "r") as file:
-            data = json.load(file)
-            return [item[key] for item in data]
-    except FileNotFoundError:
-        raise HTTPException(status_code=500, detail=f"El archivo '{file_name}' no existe.")
-    except json.JSONDecodeError:
-        return []
-
-# Cargar DNIs de pacientes y médicos
-PACIENTES_DNI = load_dnis("patients.json", "dni")
-MEDICOS_DNI = load_dnis("medics.json", "dni")
-
 ## Mostrar todas las citas
 @cita_router.get(
     path="/citas",
     tags=["Cita Medica"],
-    status_code=200
+    status_code=200,
+    dependencies=[Depends(JWTBearer())]
 )
 def show_appointments():
     appointments = load_appointments()
@@ -48,15 +37,26 @@ def show_appointments():
 @cita_router.post(
     path="/citas",
     tags=['Cita Medica'],
-    status_code=201
+    status_code=201,
+    dependencies=[Depends(JWTBearer())]
 )
 def create_appointment(appointment: CitaMedica = Body(...)):
-    if appointment.paciente_dni not in PACIENTES_DNI or not appointment.paciente_dni.isnumeric():
+    
+    pacientes_dnis = load_dnis("patients.json", "dni")
+    medicos_dnis = load_dnis("medics.json", "dni")
+    
+
+    if appointment.paciente_dni not in pacientes_dnis or not appointment.paciente_dni.isnumeric():
         raise HTTPException(status_code=400, detail="DNI del paciente no válido.")
-    if appointment.medico_dni not in MEDICOS_DNI or not appointment.medico_dni.isnumeric():
+    
+    if appointment.medico_dni not in medicos_dnis or not appointment.medico_dni.isnumeric():
         raise HTTPException(status_code=400, detail="DNI del médico no válido.")
     
     appointments = load_appointments()
+
+    appointment.id = str(appointment.id)
+    appointment.fecha = str(appointment.fecha)
+
     appointments.append(appointment.dict())
     save_appointments(appointments)
     return JSONResponse(status_code=201, content={"message": "Cita médica registrada con éxito"})
